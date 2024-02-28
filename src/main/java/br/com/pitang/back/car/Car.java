@@ -30,6 +30,17 @@ public class Car {
 	@Column(name = "CAR_COLOR")
 	private String color;
 
+	public Car() {
+
+	}
+	
+	public Car(Integer year, String licensePlate, String model, String color) {
+		this.year = year;
+		this.licensePlate = licensePlate;
+		this.model = model;
+		this.color = color;
+	}
+
 	public UUID getId() {
 		return id;
 	}
