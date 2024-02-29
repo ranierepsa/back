@@ -24,39 +24,40 @@ public class CarRestController {
     
     @GetMapping
     public ResponseEntity<List<Car>> getAllCars() {
-        List<Car> cars = carService.getAllCars();
+        List<Car> cars = carService.findAll();
         return new ResponseEntity<>(cars, HttpStatus.OK);
     }
     
     @PostMapping
     public ResponseEntity<Car> addCar(@RequestBody Car car) {
-        Car savedCar = carService.saveCar(car);
+        Car savedCar = carService.save(car);
         return new ResponseEntity<>(savedCar, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Car> getCarById(@PathVariable UUID id) {
-        Car car = carService.getCarById(id).orElse(null);
-        if (car != null) {
-            return new ResponseEntity<>(car, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Car car = carService.findById(id);
+        return car != null 
+        		? new ResponseEntity<>(car, HttpStatus.OK)
+        		: new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCar(@PathVariable UUID id) {
-        carService.deleteCar(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    	Car car = carService.findById(id);
+    	if (car != null) {
+    		carService.deleteById(id);
+    		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    	} else {
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Car> updateCar(@PathVariable UUID id, @RequestBody Car updatedCar) {
-        Car car = carService.updateCar(id, updatedCar);
-        if (car != null) {
-            return new ResponseEntity<>(car, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Car car = carService.update(id, updatedCar);
+        return car != null 
+        		? new ResponseEntity<>(car, HttpStatus.OK)
+        		: new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

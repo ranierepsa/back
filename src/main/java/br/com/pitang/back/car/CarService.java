@@ -1,7 +1,6 @@
 package br.com.pitang.back.car;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,26 +12,25 @@ public class CarService {
 	@Autowired
 	private CarRepository carRepository;
 	
-	public List<Car> getAllCars() {
+	public List<Car> findAll() {
         return carRepository.findAll();
     }
 
-    public Optional<Car> getCarById(UUID id) {
-        return carRepository.findById(id);
+    public Car findById(UUID id) {
+        return carRepository.findById(id).orElse(null);
     }
 
-    public Car saveCar(Car car) {
+    public Car save(Car car) {
         return carRepository.save(car);
     }
 
-    public void deleteCar(UUID id) {
+    public void deleteById(UUID id) {
         carRepository.deleteById(id);
     }
     
-    public Car updateCar(UUID id, Car updatedCar) {
-        Optional<Car> optionalCar = carRepository.findById(id);
-        if (optionalCar.isPresent()) {
-            Car car = optionalCar.get();
+    public Car update(UUID id, Car updatedCar) {
+        Car car = carRepository.findById(id).orElse(null);
+        if (car != null) {
             if (updatedCar.getYear() != null)
             	car.setYear(updatedCar.getYear());
             if (updatedCar.getLicensePlate() != null)
@@ -41,6 +39,7 @@ public class CarService {
             	car.setModel(updatedCar.getModel());
             if (updatedCar.getColor() != null)
             	car.setColor(updatedCar.getColor());
+
             return carRepository.save(car);
         } else {
             return null;

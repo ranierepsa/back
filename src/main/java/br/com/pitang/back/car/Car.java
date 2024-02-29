@@ -8,9 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "CAR")
+@Table(name = "CAR_TAB")
 public class Car {
 	
 	@Id
@@ -21,6 +22,7 @@ public class Car {
 	@Column(name = "CAR_YEAR")
 	private Integer year;
 	
+	@NotNull
 	@Column(name = "CAR_LICENCE_PLATE")
 	private String licensePlate;
 	
