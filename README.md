@@ -10,6 +10,7 @@
 6. Criptografar Senha.
 7. Adicionar opção para inserir imagem de Carro e Usuário.
 8. Criar testes para imagem de Carro e Usuário.
+9. Adicionar tratamento de exceções.
 
 ## SOLUÇÃO 
 
