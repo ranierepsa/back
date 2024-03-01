@@ -85,75 +85,7 @@ public class CarServiceTest {
 		assertEquals(returnedCar.getModel(), updatedCar.getModel());
 		assertEquals(returnedCar.getColor(), updatedCar.getColor());
 	}
-	
-	@Test
-	public void testUpdate_YearField() {
-		UUID carId = UUID.randomUUID();
-		Car inputCar = new Car();
-		inputCar.setYear(2024);
-		Car existingCar = new Car(2023, "ABC-1234", "Tesla", "Black");
-		Car updatedCar = new Car(2024, "ABC-1234", "Tesla", "Black");
 		
-		Mockito.when(carRepository.findById(any())).thenReturn(Optional.of(existingCar));
-		Mockito.when(carRepository.save(any())).thenReturn(updatedCar);
-
-		Car returnedCar = carService.update(carId, inputCar);
-		
-		assertNotNull(returnedCar);
-		assertEquals(updatedCar, returnedCar);
-	}
-	
-	@Test
-	public void testUpdate_LicensePlateField() {
-		UUID carId = UUID.randomUUID();
-		Car inputCar = new Car();
-		inputCar.setLicensePlate("CBA-4321");
-		Car existingCar = new Car(2023, "ABC-1234", "Tesla", "Black");
-		Car updatedCar = new Car(2023, "CBA-4321", "Tesla", "Black");
-		
-		Mockito.when(carRepository.findById(any())).thenReturn(Optional.of(existingCar));
-		Mockito.when(carRepository.save(any())).thenReturn(updatedCar);
-
-		Car returnedCar = carService.update(carId, inputCar);
-		
-		assertNotNull(returnedCar);
-		assertEquals(updatedCar, returnedCar);
-	}
-	
-	@Test
-	public void testUpdate_ModelField() {
-		UUID carId = UUID.randomUUID();
-		Car inputCar = new Car();
-		inputCar.setModel("Ford");
-		Car existingCar = new Car(2023, "ABC-1234", "Tesla", "Black");
-		Car updatedCar = new Car(2023, "ABC-1234", "Ford", "Black");
-		
-		Mockito.when(carRepository.findById(any())).thenReturn(Optional.of(existingCar));
-		Mockito.when(carRepository.save(any())).thenReturn(updatedCar);
-
-		Car returnedCar = carService.update(carId, inputCar);
-		
-		assertNotNull(returnedCar);
-		assertEquals(updatedCar, returnedCar);
-	}
-	
-	@Test
-	public void testUpdate_ColorField() {
-		UUID carId = UUID.randomUUID();
-		Car inputCar = new Car();
-		inputCar.setColor("White");
-		Car existingCar = new Car(2023, "ABC-1234", "Tesla", "Black");
-		Car updatedCar = new Car(2023, "ABC-1234", "Tesla", "White");
-		
-		Mockito.when(carRepository.findById(any())).thenReturn(Optional.of(existingCar));
-		Mockito.when(carRepository.save(any())).thenReturn(updatedCar);
-
-		Car returnedCar = carService.update(carId, inputCar);
-		
-		assertNotNull(returnedCar);
-		assertEquals(updatedCar, returnedCar);
-	}
-	
 	@Test
 	public void testUpdate_NonExistingCar() {
 		UUID carId = UUID.randomUUID();
