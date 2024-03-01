@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.pitang.back.exception.ElementNotFoundException;
+
 @RestController
 @RequestMapping("api/users")
 public class UserRestController {
@@ -37,9 +39,10 @@ public class UserRestController {
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable UUID id) {
         User user = userService.findById(id);
-        return user != null 
-        		? new ResponseEntity<>(user, HttpStatus.OK)
-        		: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (user != null)
+        	return new ResponseEntity<>(user, HttpStatus.OK);
+        else
+        	throw new ElementNotFoundException();
     }
 
     @DeleteMapping("/{id}")
@@ -49,15 +52,16 @@ public class UserRestController {
 	    	userService.deleteById(id);
 	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     	} else {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    		throw new ElementNotFoundException();
     	}
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User updatedUser) {
         User user = userService.update(id, updatedUser);
-        return user != null 
-        		? new ResponseEntity<>(user, HttpStatus.OK)
-        		: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (user != null)
+        	return new ResponseEntity<>(user, HttpStatus.OK);
+        else
+        	throw new ElementNotFoundException();
     }
 }

@@ -1,14 +1,11 @@
 package br.com.pitang.back.user;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.CreatedDate;
 
 import br.com.pitang.back.car.Car;
 import jakarta.persistence.CascadeType;
@@ -29,7 +26,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "USER_TAB", 
        uniqueConstraints = @UniqueConstraint(
-    		   columnNames = {"USER_ID", "USER_EMAIL", "USER_LOGIN"}))
+    		   columnNames = {"USER_EMAIL", "USER_LOGIN"}))
 public class User {
 	
 	@Id
@@ -92,6 +89,25 @@ public class User {
 		this.password = password;
 		this.phone = phone;
 		this.cars = cars;
+	}
+	
+	public boolean hasMissingFields() {
+		return firstName == null || firstName.isBlank()
+				|| lastName == null || lastName.isBlank()
+				|| email == null || email.isBlank()
+				|| birthday == null
+				|| login == null || login.isBlank()
+				|| password == null || password.isBlank()
+				|| phone == null || phone.isBlank();
+	}
+	
+	public boolean hasInvalidFields() {
+		return !isEmailValid();
+	}
+	
+	private boolean isEmailValid() {
+		String regex = "^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$";
+	    return email != null && email.matches(regex);
 	}
 
 	public UUID getId() {

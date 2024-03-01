@@ -8,10 +8,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "CAR_TAB")
+@Table(name = "CAR_TAB",
+		uniqueConstraints = @UniqueConstraint(
+				columnNames = {"CAR_LICENCE_PLATE"}))
 public class Car {
 	
 	@Id
@@ -41,6 +44,22 @@ public class Car {
 		this.licensePlate = licensePlate;
 		this.model = model;
 		this.color = color;
+	}
+	
+	public boolean hasMissingFields() {
+		return year == null 
+				|| licensePlate == null || licensePlate.isBlank()
+				|| model == null || model.isBlank()
+				|| color == null || model.isBlank();
+	}
+	
+	public boolean hasInvalidFields() {
+		return !isLisencePlateValid();
+	}
+	
+	private boolean isLisencePlateValid() {
+		String regex = "^[a-zA-Z]{3}-[0-9]{4}$";
+	    return licensePlate != null && licensePlate.matches(regex);
 	}
 
 	public UUID getId() {

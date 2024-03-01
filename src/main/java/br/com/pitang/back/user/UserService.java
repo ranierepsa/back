@@ -7,6 +7,11 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.pitang.back.exception.InvalidFieldsException;
+import br.com.pitang.back.exception.MissingFieldsException;
+import br.com.pitang.back.exception.UniqueLicensePlateException;
+import br.com.pitang.back.exception.UniqueUserEmailException;
+
 @Service
 public class UserService {
 
@@ -23,6 +28,10 @@ public class UserService {
 	}
 	
 	public User save(User user) {
+		if (user.hasMissingFields()) throw new MissingFieldsException();
+    	if (user.hasInvalidFields()) throw new InvalidFieldsException();
+    	if (userRepository.existsByEmail(user.getEmail())) throw new UniqueUserEmailException();
+    	
 		return userRepository.save(user);
 	}
 	
@@ -31,28 +40,11 @@ public class UserService {
 	}
 	
 	public User update(UUID id, User user) {
+		if (user.hasMissingFields()) throw new MissingFieldsException();
+    	if (user.hasInvalidFields()) throw new InvalidFieldsException();
+    	if (userRepository.existsByEmail(user.getEmail())) throw new UniqueUserEmailException();
+    	
 		User foundUser = userRepository.findById(id).orElse(null);
-        if (foundUser != null) {
-            if (user.getFirstName() != null)
-            	foundUser.setFirstName(user.getFirstName());
-            if (user.getLastName() != null)
-            	foundUser.setLastName(user.getLastName());
-            if (user.getEmail() != null)
-            	foundUser.setEmail(user.getEmail());
-            if (user.getBirthday() != null)
-            	foundUser.setBirthday(user.getBirthday());
-            if (user.getLogin() != null)
-            	foundUser.setLogin(user.getLogin());
-            if (user.getPassword() != null)
-            	foundUser.setPassword(user.getPassword());
-            if (user.getPhone() != null)
-            	foundUser.setPhone(user.getPhone());
-            if (user.getCars() != null)
-            	foundUser.setCars(user.getCars());
-            
-            return userRepository.save(foundUser);
-        } else {
-            return null;
-        }
+		return foundUser != null ? userRepository.save(foundUser) : null;
 	}
 }

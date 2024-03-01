@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.pitang.back.exception.ElementNotFoundException;
+
 @RestController
 @RequestMapping(value = "api/cars")
 public class CarRestController {
@@ -36,10 +38,11 @@ public class CarRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Car> getCarById(@PathVariable UUID id) {
-        Car car = carService.findById(id);
-        return car != null 
-        		? new ResponseEntity<>(car, HttpStatus.OK)
-        		: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		Car car = carService.findById(id);
+		if (car != null)
+        	return new ResponseEntity<>(car, HttpStatus.OK);
+        else
+        	throw new ElementNotFoundException();
     }
 
     @DeleteMapping("/{id}")
@@ -49,15 +52,16 @@ public class CarRestController {
     		carService.deleteById(id);
     		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     	} else {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    		throw new ElementNotFoundException();
     	}
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Car> updateCar(@PathVariable UUID id, @RequestBody Car updatedCar) {
         Car car = carService.update(id, updatedCar);
-        return car != null 
-        		? new ResponseEntity<>(car, HttpStatus.OK)
-        		: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (car != null)
+        	return new ResponseEntity<>(car, HttpStatus.OK);
+        else
+        	throw new ElementNotFoundException();
     }
 }

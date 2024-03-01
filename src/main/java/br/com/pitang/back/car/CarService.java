@@ -6,6 +6,10 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.pitang.back.exception.InvalidFieldsException;
+import br.com.pitang.back.exception.MissingFieldsException;
+import br.com.pitang.back.exception.UniqueLicensePlateException;
+
 @Service
 public class CarService {
 	
@@ -20,30 +24,25 @@ public class CarService {
         return carRepository.findById(id).orElse(null);
     }
 
-    public Car save(Car car) {
-        return carRepository.save(car);
+    public Car save(Car car) throws MissingFieldsException, UniqueLicensePlateException{
+    	if (car.hasMissingFields()) throw new MissingFieldsException();
+    	if (car.hasInvalidFields()) throw new InvalidFieldsException();
+    	if (carRepository.existsByLicensePlate(car.getLicensePlate())) throw new UniqueLicensePlateException();
+        
+    	return carRepository.save(car);
     }
 
     public void deleteById(UUID id) {
         carRepository.deleteById(id);
     }
     
-    public Car update(UUID id, Car updatedCar) {
+    public Car update(UUID id, Car updatedCar){
+    	if (updatedCar.hasMissingFields()) throw new MissingFieldsException();
+    	if (updatedCar.hasInvalidFields()) throw new InvalidFieldsException();
+    	if (carRepository.existsByLicensePlate(updatedCar.getLicensePlate())) throw new UniqueLicensePlateException();
+    	
         Car car = carRepository.findById(id).orElse(null);
-        if (car != null) {
-            if (updatedCar.getYear() != null)
-            	car.setYear(updatedCar.getYear());
-            if (updatedCar.getLicensePlate() != null)
-            	car.setLicensePlate(updatedCar.getLicensePlate());
-            if (updatedCar.getModel() != null)
-            	car.setModel(updatedCar.getModel());
-            if (updatedCar.getColor() != null)
-            	car.setColor(updatedCar.getColor());
-
-            return carRepository.save(car);
-        } else {
-            return null;
-        }
+        return car != null ? carRepository.save(car) : null;
     }
 
 }
