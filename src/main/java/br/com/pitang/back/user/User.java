@@ -65,7 +65,7 @@ public class User {
 	private String phone;
 	
 	@JoinColumn(name = "USER_ID")
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Car> cars;
 	
 	@Column(name = "USER_LAST_LOGIN")
@@ -78,6 +78,20 @@ public class User {
 	public User() {
 		
 	}
+
+	public User(UUID id, String firstName, String lastName, String email, LocalDate birthday, 
+			String login, String password, String phone, List<Car> cars) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.birthday = birthday;
+		this.login = login;
+		this.password = password;
+		this.phone = phone;
+		this.cars = cars;
+	}
+
 
 	public User(String firstName, String lastName, String email, LocalDate birthday, String login,
 			String password, String phone, List<Car> cars) {
@@ -188,6 +202,14 @@ public class User {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(LocalDateTime lastLogin) {
+		this.lastLogin = lastLogin;
 	}
 
 }

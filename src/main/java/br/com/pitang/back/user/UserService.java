@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.pitang.back.exception.InvalidFieldsException;
 import br.com.pitang.back.exception.MissingFieldsException;
-import br.com.pitang.back.exception.UniqueLicensePlateException;
 import br.com.pitang.back.exception.UniqueUserEmailException;
 
 @Service
@@ -42,9 +41,26 @@ public class UserService {
 	public User update(UUID id, User user) {
 		if (user.hasMissingFields()) throw new MissingFieldsException();
     	if (user.hasInvalidFields()) throw new InvalidFieldsException();
-    	if (userRepository.existsByEmail(user.getEmail())) throw new UniqueUserEmailException();
     	
 		User foundUser = userRepository.findById(id).orElse(null);
-		return foundUser != null ? userRepository.save(foundUser) : null;
+		
+		if (doesEmailBelongsToSomeoneElse(user, foundUser)) 
+			throw new UniqueUserEmailException();		
+		
+		user.setLastLogin(foundUser.getLastLogin());
+		user.setCreatedAt(foundUser.getCreatedAt());
+		
+		return foundUser != null ? userRepository.save(user) : null;
+	}
+
+	private boolean doesEmailBelongsToSomeoneElse(User user, User foundUser) {
+		return foundUser != null && user != null
+				&& userRepository.existsByEmail(user.getEmail())
+				&& !user.getEmail().equals(foundUser.getEmail());
+	}
+
+	public User findByLogin(String login) {
+		Optional<User> optUser = userRepository.findByLogin(login);
+		return optUser.orElse(null);
 	}
 }
