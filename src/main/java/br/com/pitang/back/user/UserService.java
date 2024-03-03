@@ -44,6 +44,8 @@ public class UserService {
     	
 		User foundUser = userRepository.findById(id).orElse(null);
 		
+		if (foundUser == null) return null;
+		
 		if (doesEmailBelongsToSomeoneElse(user, foundUser)) 
 			throw new UniqueUserEmailException();		
 		
