@@ -28,7 +28,7 @@ public class AuthenticationController {
 	public ResponseEntity<?> signIn(@RequestBody UserCredentialDTO userCredentials) {
 		User user = userService.findByLogin(userCredentials.getLogin());
 		
-		if (user == null || !userCredentials.getPassword().equals(user.getPassword())) {
+		if (user == null || !SecurityService.getInstance().verifyPasswords(userCredentials.getPassword(), user.getPassword())) {
 			throw new InvalidCredentialsException();
 		}
 		

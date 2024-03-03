@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pitang.back.exception.ElementNotFoundException;
+import br.com.pitang.back.security.SecurityService;
 
 @RestController
 @RequestMapping("api/users")
@@ -32,7 +33,9 @@ public class UserRestController {
     
     @PostMapping
     public ResponseEntity<User> addUser(@RequestBody User user) {
-        User savedUser = userService.save(user);
+    	String encryptedPassword = SecurityService.getInstance().encodePassword(user.getPassword());
+    	user.setPassword(encryptedPassword);
+    	User savedUser = userService.save(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
