@@ -38,8 +38,9 @@ public class AuthenticationController {
 	}
 	
 	@GetMapping(value = "/me")
-	public ResponseEntity<User> getLoggedUserInfo() {
+	public ResponseEntity<LoggedUserDTO> getLoggedUserInfo() {
 		User user = SecurityService.getInstance().getLoggedUser();
-		return new ResponseEntity<>(user, HttpStatus.OK);
+		LoggedUserDTO loggedUserDTO = new LoggedUserDTO(user);
+		return new ResponseEntity<>(loggedUserDTO, HttpStatus.OK);
 	}
 }

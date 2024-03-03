@@ -61,7 +61,9 @@ public class UserRestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User updatedUser) {
-        User user = userService.update(id, updatedUser);
+    	String encryptedPassword = SecurityService.getInstance().encodePassword(updatedUser.getPassword());
+    	updatedUser.setPassword(encryptedPassword);
+    	User user = userService.update(id, updatedUser);
         if (user != null)
         	return new ResponseEntity<>(user, HttpStatus.OK);
         else

@@ -47,6 +47,7 @@ public class UserService {
 		if (doesEmailBelongsToSomeoneElse(user, foundUser)) 
 			throw new UniqueUserEmailException();		
 		
+		user.setId(id);
 		user.setLastLogin(foundUser.getLastLogin());
 		user.setCreatedAt(foundUser.getCreatedAt());
 		

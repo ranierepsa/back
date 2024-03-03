@@ -42,6 +42,7 @@ public class CarService {
     	if (carRepository.existsByLicensePlate(updatedCar.getLicensePlate())) throw new UniqueLicensePlateException();
     	
         Car car = carRepository.findById(id).orElse(null);
+        updatedCar.setId(id);
         return car != null ? carRepository.save(updatedCar) : null;
     }
 
