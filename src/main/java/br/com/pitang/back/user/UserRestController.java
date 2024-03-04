@@ -26,24 +26,25 @@ public class UserRestController {
 	private UserService userService;
     
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userService.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<UserDTO> usersDTO = users.stream().map(user -> new UserDTO(user)).toList();
+        return new ResponseEntity<>(usersDTO, HttpStatus.OK);
     }
     
     @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> addUser(@RequestBody User user) {
     	String encryptedPassword = SecurityService.getInstance().encodePassword(user.getPassword());
     	user.setPassword(encryptedPassword);
     	User savedUser = userService.save(user);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        return new ResponseEntity<>(new UserDTO(savedUser), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable UUID id) {
         User user = userService.findById(id);
         if (user != null)
-        	return new ResponseEntity<>(user, HttpStatus.OK);
+        	return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
         else
         	throw new ElementNotFoundException();
     }
@@ -60,12 +61,12 @@ public class UserRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User updatedUser) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id, @RequestBody User updatedUser) {
     	String encryptedPassword = SecurityService.getInstance().encodePassword(updatedUser.getPassword());
     	updatedUser.setPassword(encryptedPassword);
     	User user = userService.update(id, updatedUser);
         if (user != null)
-        	return new ResponseEntity<>(user, HttpStatus.OK);
+        	return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
         else
         	throw new ElementNotFoundException();
     }
